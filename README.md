@@ -38,7 +38,7 @@ python main.py
 #### Step 4.2 : Generate LLM Response
 
 - First we need to filter data from the complete parsed output we got.
-- To run this make sure you have  `GEMINI_API_KEY`. You can create a new API KEY from [Gpogle Studio](https://aistudio.google.com/)
+- To run this make sure you have  `GEMINI_API_KEY`. You can create a new API KEY from [Google Studio](https://aistudio.google.com/)
 
   ```
   python ai_agent.py
