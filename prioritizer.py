@@ -34,227 +34,121 @@ def prioritize_suggestions(gemini_json):
 if __name__ == "__main__":
     # Paste the suggestions list you got from Gemini here
     raw_data = {
-
   "suggestions": [
-
     {
-
-      "target_bin": "cg_transfer_size.cp_size.max[4096]",
-
+      "target_bin": "cg_transfer_size.cp_size[max]",
       "priority": "High",
-
       "difficulty": "Medium",
-
-      "suggestion": "Add a test case to specifically target the maximum transfer size of 4096.",
-
+      "suggestion": "Add a test case to cover the maximum transfer size of 4096.",
       "test_outline": [
-
-        "Configure the DMA controller for a transfer.",
-
-        "Set the transfer size to exactly 4096.",
-
-        "Initiate the transfer and verify successful completion.",
-
-        "Monitor the transfer size register to ensure it accurately reflects 4096."
-
+        "Configure DMA controller for a transfer.",
+        "Set transfer size to 4096 bytes.",
+        "Initiate the transfer.",
+        "Verify the transfer completes successfully.",
+        "Monitor bus activity to ensure the correct amount of data is transferred."
       ],
-
       "dependencies": [],
-
-      "reasoning": "The bin 'max[4096]' for cp_size in cg_transfer_size is uncovered, indicating that transfers of this specific size have not been tested. This is a critical boundary condition that needs verification."
-
+      "reasoning": "The 'max[4096]' bin in 'cg_transfer_size.cp_size' is uncovered, indicating that tests for the largest transfer size are missing. This could lead to issues with large data block transfers."    
     },
-
     {
-
-      "target_bin": "cg_transfer_size.cp_burst_type.wrap",
-
+      "target_bin": "cg_transfer_size.cp_burst_type[wrap]",
       "priority": "Medium",
-
-      "difficulty": "Easy",
-
-      "suggestion": "Introduce test cases that utilize the 'wrap' burst type for transfer sizes.",        
-
+      "difficulty": "Low",
+      "suggestion": "Add a test case specifically for the 'wrap' burst type.",
       "test_outline": [
-
-        "Configure the DMA controller for a transfer.",
-
-        "Set the burst type to 'wrap'.",
-
-        "Perform transfers of various sizes (e.g., small, medium, and near 4096).",
-
-        "Verify the wrap-around behavior of the burst transactions if applicable."
-
+        "Configure DMA controller for a transfer.",
+        "Set burst type to 'wrap'.",
+        "Initiate the transfer.",
+        "Verify the transfer completes successfully.",
+        "Observe burst behavior to ensure it follows the 'wrap' pattern."
       ],
-
       "dependencies": [],
-
-      "reasoning": "The 'wrap' burst type for cg_transfer_size.cp_burst_type is uncovered. This burst mode needs to be tested to ensure correct behavior."
-
+      "reasoning": "The 'wrap' burst type for 'cg_transfer_size.cp_burst_type' is uncovered. This burst mode might have specific timing or control signal requirements that need verification."
     },
-
     {
-
-      "target_bin": "cg_channel_arbitration.cp_active_channels.four_channels",
-
+      "target_bin": "cg_channel_arbitration.cp_active_channels[four_channels]",
       "priority": "High",
-
       "difficulty": "Medium",
-
-      "suggestion": "Create a test scenario where exactly four DMA channels are active simultaneously.",  
-
+      "suggestion": "Create a test scenario where exactly four channels are active.",
       "test_outline": [
-
-        "Configure and enable four distinct DMA channels.",
-
-        "Initiate transfers on all four channels concurrently or in close succession.",
-
-        "Monitor the arbitration logic to ensure fair and correct channel selection.",
-
-        "Verify that all four active channels receive adequate bandwidth and complete their transfers."   
-
+        "Configure DMA controller to support 8 channels.",
+        "Activate channels 0, 1, 2, and 3.",
+        "Initiate transfers on all active channels concurrently.",
+        "Verify that arbitration functions correctly and all transfers are eventually serviced.",
+        "Monitor channel status signals."
       ],
-
       "dependencies": [],
-
-      "reasoning": "The scenario with exactly four active channels in cg_channel_arbitration.cp_active_channels is not covered, which is a specific configuration that needs to be validated for correct arbitration."
-
+      "reasoning": "The 'four_channels' bin for 'cp_active_channels' in 'cg_channel_arbitration' is uncovered. Testing with a specific number of active channels is crucial for verifying the arbitration logic under load."
     },
-
     {
-
-      "target_bin": "cg_channel_arbitration.cp_active_channels.all_eight",
-
+      "target_bin": "cg_channel_arbitration.cp_active_channels[all_eight]",
       "priority": "High",
-
-      "difficulty": "Hard",
-
-      "suggestion": "Develop a test that stresses the arbitration mechanism with all eight DMA channels active.",
-
+      "difficulty": "High",
+      "suggestion": "Add a test case that activates all eight channels simultaneously.",
       "test_outline": [
-
-        "Configure and enable all eight DMA channels.",
-
-        "Initiate concurrent transfers across all eight channels, potentially with varying sizes and priorities.",
-
-        "Perform extensive monitoring of the arbitration logic under heavy load.",
-
-        "Verify that the system remains stable and that all channels make progress without starvation.",  
-
-        "Analyze performance metrics to ensure acceptable throughput for each channel."
-
+        "Configure DMA controller to support 8 channels.",
+        "Activate all eight channels (0-7).",
+        "Initiate transfers on all active channels concurrently.",
+        "Verify that the arbitration logic handles maximum concurrent requests correctly.",
+        "Ensure no starvation occurs for any channel.",
+        "Monitor channel status and transfer completion for all channels."
       ],
-
       "dependencies": [],
-
-      "reasoning": "The 'all_eight' active channels scenario for cg_channel_arbitration.cp_active_channels is uncovered. Testing this maximum load condition is crucial for verifying the robustness and fairness of the arbitration logic."
-
+      "reasoning": "The 'all_eight' bin for 'cp_active_channels' in 'cg_channel_arbitration' is uncovered. This is a critical scenario for stress-testing the arbitration logic under maximum load."
     },
-
     {
-
-      "target_bin": "cross_size_burst.small, wrap",
-
+      "target_bin": "cross_size_burst[small, wrap]",
       "priority": "Medium",
-
-      "difficulty": "Easy",
-
+      "difficulty": "Medium",
       "suggestion": "Test a small transfer size combined with the 'wrap' burst type.",
-
       "test_outline": [
-
-        "Configure the DMA controller for a small transfer size.",
-
-        "Set the burst type to 'wrap'.",
-
-        "Initiate the transfer and verify its completion.",
-
-        "Observe burst behavior if applicable."
-
+        "Configure DMA controller for a transfer.",
+        "Set transfer size to a small value (e.g., 128 bytes).",
+        "Set burst type to 'wrap'.",
+        "Initiate the transfer.",
+        "Verify the transfer completes successfully.",
+        "Observe burst behavior to ensure it follows the 'wrap' pattern for small transfers."
       ],
-
       "dependencies": [
-
-        "cg_transfer_size.cp_size.small",
-
-        "cg_transfer_size.cp_burst_type.wrap"
-
+        "cg_transfer_size.cp_burst_type[wrap]"
       ],
-
-      "reasoning": "The combination of 'small' transfer size and 'wrap' burst type is missing from the cross-coverage, indicating a gap in testing this specific interaction."
-
+      "reasoning": "This cross-coverage scenario was explicitly listed as uncovered. It combines a small transfer size with the 'wrap' burst type, which needs verification to ensure proper interaction."
     },
-
     {
-
-      "target_bin": "cross_size_burst.medium, wrap",
-
+      "target_bin": "cross_size_burst[medium, wrap]",
       "priority": "Medium",
-
-      "difficulty": "Easy",
-
+      "difficulty": "Medium",
       "suggestion": "Test a medium transfer size combined with the 'wrap' burst type.",
-
       "test_outline": [
-
-        "Configure the DMA controller for a medium transfer size.",
-
-        "Set the burst type to 'wrap'.",
-
-        "Initiate the transfer and verify its completion.",
-
-        "Observe burst behavior if applicable."
-
+        "Configure DMA controller for a transfer.",
+        "Set transfer size to a medium value (e.g., 512 bytes).",
+        "Set burst type to 'wrap'.",
+        "Initiate the transfer.",
+        "Verify the transfer completes successfully.",
+        "Observe burst behavior to ensure it follows the 'wrap' pattern for medium transfers."
       ],
-
       "dependencies": [
-
-        "cg_transfer_size.cp_size.medium",
-
-        "cg_transfer_size.cp_burst_type.wrap"
-
+        "cg_transfer_size.cp_burst_type[wrap]"
       ],
-
-      "reasoning": "The combination of 'medium' transfer size and 'wrap' burst type is missing from the cross-coverage, indicating a gap in testing this specific interaction."
-
+      "reasoning": "This cross-coverage scenario was explicitly listed as uncovered. It combines a medium transfer size with the 'wrap' burst type, which needs verification to ensure proper interaction."
     },
-
     {
-
-      "target_bin": "cross_size_burst.medium, fixed",
-
+      "target_bin": "cross_size_burst[medium, fixed]",
       "priority": "Medium",
-
-      "difficulty": "Easy",
-
+      "difficulty": "Low",
       "suggestion": "Test a medium transfer size combined with the 'fixed' burst type.",
-
       "test_outline": [
-
-        "Configure the DMA controller for a medium transfer size.",
-
-        "Set the burst type to 'fixed'.",
-
-        "Initiate the transfer and verify its completion.",
-
-        "Observe burst behavior if applicable."
-
+        "Configure DMA controller for a transfer.",
+        "Set transfer size to a medium value (e.g., 768 bytes).",
+        "Set burst type to 'fixed'.",
+        "Initiate the transfer.",
+        "Verify the transfer completes successfully.",
+        "Observe burst behavior to ensure it follows the 'fixed' pattern for medium transfers."
       ],
-
-      "dependencies": [
-
-        "cg_transfer_size.cp_size.medium",
-
-        "cg_transfer_size.cp_burst_type.fixed"
-
-      ],
-
-      "reasoning": "The combination of 'medium' transfer size and 'fixed' burst type is missing from the cross-coverage, indicating a gap in testing this specific interaction."
-
+      "dependencies": [],
+      "reasoning": "This cross-coverage scenario was explicitly listed as uncovered. It combines a medium transfer size with the 'fixed' burst type. While 'fixed' might be the default or implied, explicit testing is good practice."
     }
-
   ]
-
 }
     
     final_results = prioritize_suggestions(raw_data)

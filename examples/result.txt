@@ -1,0 +1,438 @@
+Example Input : 
+
+report.txt file
+
+
+
+Parser Output :
+
+{
+  "design": "dma_controller",
+  "overall_coverage": 54.84,
+  "covergroups": [
+    {
+      "name": "cg_transfer_size",
+      "coverage": 75.0,
+      "coverpoints": [
+        {
+          "name": "cp_size",
+          "bins": [
+            {
+              "name": "small",
+              "range": "[0:255]",
+              "hits": 1523,
+              "covered": true
+            },
+            {
+              "name": "medium",
+              "range": "[256:1023]",
+              "hits": 892,
+              "covered": true
+            },
+            {
+              "name": "large",
+              "range": "[1024:4095]",
+              "hits": 445,
+              "covered": true
+            },
+            {
+              "name": "max",
+              "range": "[4096]",
+              "hits": 0,
+              "covered": false
+            }
+          ]
+        },
+        {
+          "name": "cp_burst_type",
+          "bins": [
+            {
+              "name": "single",
+              "range": "",
+              "hits": 2341,
+              "covered": true
+            },
+            {
+              "name": "incr",
+              "range": "",
+              "hits": 1822,
+              "covered": true
+            },
+            {
+              "name": "wrap",
+              "range": "",
+              "hits": 0,
+              "covered": false
+            },
+            {
+              "name": "fixed",
+              "range": "",
+              "hits": 234,
+              "covered": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "cg_channel_arbitration",
+      "coverage": 60.0,
+      "coverpoints": [
+        {
+          "name": "cp_active_channels",
+          "bins": [
+            {
+              "name": "one_channel",
+              "range": "",
+              "hits": 5000,
+              "covered": true
+            },
+            {
+              "name": "two_channels",
+              "range": "",
+              "hits": 1200,
+              "covered": true
+            },
+            {
+              "name": "three_channels",
+              "range": "",
+              "hits": 45,
+              "covered": true
+            },
+            {
+              "name": "four_channels",
+              "range": "",
+              "hits": 0,
+              "covered": false
+            },
+            {
+              "name": "all_eight",
+              "range": "",
+              "hits": 0,
+              "covered": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "cg_error_scenarios",
+      "coverage": 50.0,
+      "coverpoints": [
+        {
+          "name": "cp_error_type",
+          "bins": [
+            {
+              "name": "no_error",
+              "range": "",
+              "hits": 10000,
+              "covered": true
+            },
+            {
+              "name": "slave_error",
+              "range": "",
+              "hits": 234,
+              "covered": true
+            },
+            {
+              "name": "decode_error",
+              "range": "",
+              "hits": 0,
+              "covered": false
+            },
+            {
+              "name": "timeout",
+              "range": "",
+              "hits": 0,
+              "covered": false
+            }
+          ]
+        },
+        {
+          "name": "cp_error_recovery",
+          "bins": [
+            {
+              "name": "retry_success",
+              "range": "",
+              "hits": 0,
+              "covered": false
+            },
+            {
+              "name": "abort",
+              "range": "",
+              "hits": 0,
+              "covered": false
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "uncovered_bins": [
+    {
+      "covergroup": "cg_transfer_size",
+      "coverpoint": "cp_size",
+      "bin": "max[4096]"
+    },
+    {
+      "covergroup": "cg_transfer_size",
+      "coverpoint": "cp_burst_type",
+      "bin": "wrap"
+    },
+    {
+      "covergroup": "cg_channel_arbitration",
+      "coverpoint": "cp_active_channels",
+      "bin": "four_channels"
+    },
+    {
+      "covergroup": "cg_channel_arbitration",
+      "coverpoint": "cp_active_channels",
+      "bin": "all_eight"
+    },
+    {
+      "covergroup": "cg_error_scenarios",
+      "coverpoint": "cp_error_type",
+      "bin": "decode_error"
+    },
+    {
+      "covergroup": "cg_error_scenarios",
+      "coverpoint": "cp_error_type",
+      "bin": "timeout"
+    },
+    {
+      "covergroup": "cg_error_scenarios",
+      "coverpoint": "cp_error_recovery",
+      "bin": "retry_success"
+    },
+    {
+      "covergroup": "cg_error_scenarios",
+      "coverpoint": "cp_error_recovery",
+      "bin": "abort"
+    }
+  ],
+  "cross_coverage": [
+    {
+      "name": "cross_size_burst",
+      "coverage": 50.0,
+      "uncovered": [
+        "<small, wrap>",
+        "<medium, wrap>",
+        "<medium, fixed>"
+      ]
+    }
+  ]
+}
+
+
+Here we need to give parsed filter input, because we are giving prompt to Gemini LLM. So 
+if input will be very large then it will consume more tokens. So from the above Parse Output
+we will filter out some data and give it to Gemini LLM as a prompt. 
+
+So this is the filter Parser Input we taken as an example :
+
+
+Input Parser Filter Data (prompt) :
+
+{
+   "design": "dma_controller",
+   "overall_coverage": 54.84,
+   "covergroups": [
+      {
+         "name": "cg_transfer_size",
+         "coverage": 75.0,
+         "coverpoints": [
+            {
+               "name": "cp_size",
+               "bins": [
+                  {
+                     "name": "small",
+                     "range": "[0:255]",
+                     "hits": 1523,
+                     "covered": true
+                  },
+                  {
+                     "name": "medium",
+                     "range": "[256:1023]",
+                     "hits": 892,
+                     "covered": true
+                  }
+               ]
+            }
+         ]
+      }
+   ],
+   "uncovered_bins": [
+      {
+         "covergroup": "cg_transfer_size",
+         "coverpoint": "cp_size",
+         "bin": "max[4096]"
+      },
+      {
+         "covergroup": "cg_transfer_size",
+         "coverpoint": "cp_burst_type",
+         "bin": "wrap"
+      },
+      {
+         "covergroup": "cg_channel_arbitration",
+         "coverpoint": "cp_active_channels",
+         "bin": "four_channels"
+      },
+      {
+         "covergroup": "cg_channel_arbitration",
+         "coverpoint": "cp_active_channels",
+         "bin": "all_eight"
+      }
+   ],
+   "cross_coverage": [
+      {
+         "name": "cross_size_burst",
+         "coverage": 50.0,
+         "uncovered": [
+            "<small, wrap>",
+            "<medium, wrap>",
+            "<medium, fixed>"
+         ]
+      }
+   ]
+}
+
+
+
+LLM Response :
+
+
+{
+  "suggestions": [
+    {
+      "target_bin": "cg_transfer_size.cp_size[max]",
+      "priority": "High",
+      "difficulty": "Medium",
+      "suggestion": "Add a test case to cover the maximum transfer size of 4096.",
+      "test_outline": [
+        "Configure DMA controller for a transfer.",
+        "Set transfer size to 4096 bytes.",
+        "Initiate the transfer.",
+        "Verify the transfer completes successfully.",
+        "Monitor bus activity to ensure the correct amount of data is transferred."
+      ],
+      "dependencies": [],
+      "reasoning": "The 'max[4096]' bin in 'cg_transfer_size.cp_size' is uncovered, indicating that tests for the largest transfer size are missing. This could lead to issues with large data block transfers."    
+    },
+    {
+      "target_bin": "cg_transfer_size.cp_burst_type[wrap]",
+      "priority": "Medium",
+      "difficulty": "Low",
+      "suggestion": "Add a test case specifically for the 'wrap' burst type.",
+      "test_outline": [
+        "Configure DMA controller for a transfer.",
+        "Set burst type to 'wrap'.",
+        "Initiate the transfer.",
+        "Verify the transfer completes successfully.",
+        "Observe burst behavior to ensure it follows the 'wrap' pattern."
+      ],
+      "dependencies": [],
+      "reasoning": "The 'wrap' burst type for 'cg_transfer_size.cp_burst_type' is uncovered. This burst mode might have specific timing or control signal requirements that need verification."
+    },
+    {
+      "target_bin": "cg_channel_arbitration.cp_active_channels[four_channels]",
+      "priority": "High",
+      "difficulty": "Medium",
+      "suggestion": "Create a test scenario where exactly four channels are active.",
+      "test_outline": [
+        "Configure DMA controller to support 8 channels.",
+        "Activate channels 0, 1, 2, and 3.",
+        "Initiate transfers on all active channels concurrently.",
+        "Verify that arbitration functions correctly and all transfers are eventually serviced.",
+        "Monitor channel status signals."
+      ],
+      "dependencies": [],
+      "reasoning": "The 'four_channels' bin for 'cp_active_channels' in 'cg_channel_arbitration' is uncovered. Testing with a specific number of active channels is crucial for verifying the arbitration logic under load."
+    },
+    {
+      "target_bin": "cg_channel_arbitration.cp_active_channels[all_eight]",
+      "priority": "High",
+      "difficulty": "High",
+      "suggestion": "Add a test case that activates all eight channels simultaneously.",
+      "test_outline": [
+        "Configure DMA controller to support 8 channels.",
+        "Activate all eight channels (0-7).",
+        "Initiate transfers on all active channels concurrently.",
+        "Verify that the arbitration logic handles maximum concurrent requests correctly.",
+        "Ensure no starvation occurs for any channel.",
+        "Monitor channel status and transfer completion for all channels."
+      ],
+      "dependencies": [],
+      "reasoning": "The 'all_eight' bin for 'cp_active_channels' in 'cg_channel_arbitration' is uncovered. This is a critical scenario for stress-testing the arbitration logic under maximum load."
+    },
+    {
+      "target_bin": "cross_size_burst[small, wrap]",
+      "priority": "Medium",
+      "difficulty": "Medium",
+      "suggestion": "Test a small transfer size combined with the 'wrap' burst type.",
+      "test_outline": [
+        "Configure DMA controller for a transfer.",
+        "Set transfer size to a small value (e.g., 128 bytes).",
+        "Set burst type to 'wrap'.",
+        "Initiate the transfer.",
+        "Verify the transfer completes successfully.",
+        "Observe burst behavior to ensure it follows the 'wrap' pattern for small transfers."
+      ],
+      "dependencies": [
+        "cg_transfer_size.cp_burst_type[wrap]"
+      ],
+      "reasoning": "This cross-coverage scenario was explicitly listed as uncovered. It combines a small transfer size with the 'wrap' burst type, which needs verification to ensure proper interaction."
+    },
+    {
+      "target_bin": "cross_size_burst[medium, wrap]",
+      "priority": "Medium",
+      "difficulty": "Medium",
+      "suggestion": "Test a medium transfer size combined with the 'wrap' burst type.",
+      "test_outline": [
+        "Configure DMA controller for a transfer.",
+        "Set transfer size to a medium value (e.g., 512 bytes).",
+        "Set burst type to 'wrap'.",
+        "Initiate the transfer.",
+        "Verify the transfer completes successfully.",
+        "Observe burst behavior to ensure it follows the 'wrap' pattern for medium transfers."
+      ],
+      "dependencies": [
+        "cg_transfer_size.cp_burst_type[wrap]"
+      ],
+      "reasoning": "This cross-coverage scenario was explicitly listed as uncovered. It combines a medium transfer size with the 'wrap' burst type, which needs verification to ensure proper interaction."
+    },
+    {
+      "target_bin": "cross_size_burst[medium, fixed]",
+      "priority": "Medium",
+      "difficulty": "Low",
+      "suggestion": "Test a medium transfer size combined with the 'fixed' burst type.",
+      "test_outline": [
+        "Configure DMA controller for a transfer.",
+        "Set transfer size to a medium value (e.g., 768 bytes).",
+        "Set burst type to 'fixed'.",
+        "Initiate the transfer.",
+        "Verify the transfer completes successfully.",
+        "Observe burst behavior to ensure it follows the 'fixed' pattern for medium transfers."
+      ],
+      "dependencies": [],
+      "reasoning": "This cross-coverage scenario was explicitly listed as uncovered. It combines a medium transfer size with the 'fixed' burst type. While 'fixed' might be the default or implied, explicit testing is good practice."
+    }
+  ]
+}
+
+
+Now, we will give this LLM response as input to Proritization Algorithm which will 
+predict the score and sort the suggestions as follows :
+
+
+
+Target Bin                               | Score     
+-------------------------------------------------------
+cg_transfer_size.cp_size[max]            | 4.45
+cg_channel_arbitration.cp_active_channels[four_channels] | 4.45
+cg_channel_arbitration.cp_active_channels[all_eight] | 4.45
+cg_transfer_size.cp_burst_type[wrap]     | 2.45
+cross_size_burst[medium, fixed]          | 2.45
+cross_size_burst[small, wrap]            | 2.3
+cross_size_burst[medium, wrap]           | 2.3
+
+
